@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Press+Start+2P&size=18&pause=1000&color=F3701E&center=true&vCenter=true&width=700&lines=SHASHKI;nfactorial+Checkers+Platform;vs+Arman+AI;Real-time+Multiplayer;Built+for+nfactorial+2024" alt="Shashki" />
+<img src="https://readme-typing-svg.demolab.com?font=Press+Start+2P&size=18&pause=1000&color=F3701E&center=true&vCenter=true&width=700&lines=SHASHKI;nfactorial+Checkers+Platform;vs+Arman+AI;Real-time+Multiplayer;Built+for+nfactorial" alt="Shashki" />
 
 <br />
 
@@ -31,7 +31,7 @@
 </div>
 -->
 
-> **The most ambitious checkers platform ever built.** Not just a board game — a startup prototype with AI, real-time multiplayer, monetization, and pixel art soul. Built for the **nfactorial school 2024** challenge.
+> **The most ambitious checkers platform ever built.** Not just a board game — a startup prototype with AI, real-time multiplayer, monetization, and pixel art soul. Built for the **nfactorial school** challenge.
 
 ---
 
@@ -185,6 +185,6 @@ components/game/
 
 <div align="center">
 
-**Made with ❤️ for nfactorial school 2024 · Built with [Claude Code](https://claude.ai/code)**
+**Made with ❤️ for nfactorial school · Built with [Claude Code](https://claude.ai/code)**
 
 </div>
