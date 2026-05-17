@@ -63,11 +63,11 @@ Lo-fi background music via **Howler.js** + 8-bit SFX generated with **Web Audio 
 
 | Landing | vs Arman AI | Leaderboard |
 |:-------:|:-----------:|:-----------:|
-| _add screenshot_ | _add screenshot_ | _add screenshot_ |
+| ![Landing](public/screenshots/landing.png) | ![vs Arman AI](public/screenshots/ai.png) | ![Leaderboard](public/screenshots/leaderboard.png) |
 
 | Puzzle Mode | Board Editor | Pro Themes |
 |:-----------:|:-----------:|:----------:|
-| _add screenshot_ | _add screenshot_ | _add screenshot_ |
+| ![Puzzles](public/screenshots/puzzle.png) | ![Board Editor](public/screenshots/editor.png) | ![Customize](public/screenshots/customize.png) |
 
 ---
 
