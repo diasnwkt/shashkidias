@@ -1,7 +1,8 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import ArmanSprite, { ArmanMood } from './ArmanSprite'
 import { Difficulty } from '@/lib/checkers/minimax'
+import { ExternalLink, Rss } from 'lucide-react'
 
 interface NewsItem {
   title: string
@@ -60,10 +61,8 @@ function getRandomQuip(category: string): string {
 
 export default function ArmanPanel({ mood, difficulty, isMyTurn, lastEvent }: ArmanPanelProps) {
   const [speech, setSpeech] = useState(getRandomQuip('idle'))
-  const [news, setNews] = useState<NewsItem | null>(null)
-  const [showNews, setShowNews] = useState(false)
-  const [newsIndex, setNewsIndex] = useState(0)
   const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+  const [newsLoaded, setNewsLoaded] = useState(false)
 
   // Fetch HackerNews items
   useEffect(() => {
@@ -73,27 +72,12 @@ export default function ArmanPanel({ mood, difficulty, isMyTurn, lastEvent }: Ar
         if (res.ok) {
           const data = await res.json()
           setNewsItems(data.items || [])
+          setNewsLoaded(true)
         }
       } catch {}
     }
     fetchNews()
   }, [])
-
-  // Rotate news every 30 seconds during AI turn
-  useEffect(() => {
-    if (!isMyTurn && newsItems.length > 0) {
-      const item = newsItems[newsIndex % newsItems.length]
-      setNews(item)
-      setShowNews(true)
-      const timer = setTimeout(() => {
-        setShowNews(false)
-        setNewsIndex(i => i + 1)
-      }, 28000)
-      return () => clearTimeout(timer)
-    } else {
-      setShowNews(false)
-    }
-  }, [isMyTurn, newsItems, newsIndex])
 
   // Update speech based on events
   useEffect(() => {
@@ -114,10 +98,10 @@ export default function ArmanPanel({ mood, difficulty, isMyTurn, lastEvent }: Ar
   const difficultyColor = { easy: '#669bbc', normal: '#f3701e', arman: '#c1121f' }[difficulty]
 
   return (
-    <div className="flex flex-col gap-3 w-full max-w-[200px]">
+    <div className="flex flex-col gap-3 w-full max-w-[220px]">
       {/* Arman character */}
       <div className="flex flex-col items-center gap-2">
-        <ArmanSprite mood={mood} size={100} />
+        <ArmanSprite mood={mood} size={110} />
         <div className="font-pixel text-[8px] text-center" style={{ color: difficultyColor }}>
           ARMAN [{difficultyLabel}]
         </div>
@@ -129,22 +113,55 @@ export default function ArmanPanel({ mood, difficulty, isMyTurn, lastEvent }: Ar
         <div className="absolute -top-2 left-4 w-0 h-0"
           style={{ borderLeft: '6px solid transparent', borderRight: '6px solid transparent', borderBottom: '8px solid rgba(243,112,30,0.4)' }} />
         <span className="text-white/80">Arman:</span>{' '}{speech}
+        {!isMyTurn && (
+          <span className="inline-flex gap-0.5 ml-1">
+            {[0, 1, 2].map(i => (
+              <span key={i} className="inline-block w-1 h-1 rounded-full bg-[#669bbc]"
+                style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+            ))}
+          </span>
+        )}
       </div>
 
-      {/* News ticker (shown during AI thinking) */}
-      {showNews && news && (
-        <div className="border border-[#669bbc]/20 p-2 text-[10px]"
-          style={{ background: 'rgba(0,20,40,0.8)' }}>
-          <div className="flex items-center gap-1 mb-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#f3701e] animate-pulse" />
-            <span className="font-pixel text-[6px] text-[#f3701e]">TECH NEWS</span>
-          </div>
-          <p className="text-[#669bbc] leading-relaxed line-clamp-3">{news.title}</p>
-          {news.summary && (
-            <p className="text-white/50 mt-1 text-[9px] leading-relaxed line-clamp-2">{news.summary}</p>
+      {/* Tech News Grid */}
+      <div className="border border-[#669bbc]/15 overflow-hidden"
+        style={{ background: 'rgba(0,18,36,0.85)' }}>
+        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-[#669bbc]/10">
+          <Rss size={9} style={{ color: '#f3701e' }} />
+          <span className="font-pixel text-[6px] text-[#f3701e] tracking-wider">TECH NEWS</span>
+          {!isMyTurn && (
+            <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#f3701e] animate-pulse" />
           )}
         </div>
-      )}
+
+        <div className="flex flex-col divide-y divide-white/[0.04]">
+          {newsLoaded && newsItems.length > 0 ? newsItems.slice(0, 3).map((item, i) => (
+            <a
+              key={i}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col gap-0.5 px-3 py-2 hover:bg-white/[0.03] transition-colors"
+            >
+              <p className="text-[10px] text-[#669bbc]/80 leading-snug line-clamp-2 group-hover:text-white transition-colors">
+                {item.title}
+              </p>
+              <div className="flex items-center gap-1">
+                <span className="text-[8px] text-[#669bbc]/30">{item.source}</span>
+                <ExternalLink size={7} className="text-[#669bbc]/20 group-hover:text-[#669bbc]/50 transition-colors ml-auto" />
+              </div>
+            </a>
+          )) : (
+            // Skeleton placeholders
+            [0, 1, 2].map(i => (
+              <div key={i} className="px-3 py-2">
+                <div className="h-2 rounded bg-white/[0.06] mb-1.5" style={{ width: `${70 + i * 10}%` }} />
+                <div className="h-1.5 rounded bg-white/[0.04]" style={{ width: '40%' }} />
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   )
 }

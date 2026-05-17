@@ -65,6 +65,14 @@ export default function Board({
 
     // If clicking own piece, select it
     if (piece && piece.color === gameState.currentTurn) {
+      // During mid-chain capture, piece is locked — can't switch to another piece
+      if (
+        gameState.selectedPiece &&
+        gameState.validMoves.length > 0 &&
+        gameState.lastMove &&
+        gameState.selectedPiece.row === gameState.lastMove.to.row &&
+        gameState.selectedPiece.col === gameState.lastMove.to.col
+      ) return
       onStateChange(selectPiece(gameState, row, col))
       return
     }

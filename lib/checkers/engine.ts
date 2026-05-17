@@ -249,6 +249,18 @@ export function selectPiece(state: GameState, row: number, col: number): GameSta
     return state
   }
 
+  // Mid-chain lock: after a capture, selectedPiece sits exactly on lastMove.to
+  // (set together by applyMoveToState). A fresh selection never has this match.
+  if (
+    state.selectedPiece &&
+    state.validMoves.length > 0 &&
+    state.lastMove &&
+    state.selectedPiece.row === state.lastMove.to.row &&
+    state.selectedPiece.col === state.lastMove.to.col
+  ) {
+    return state
+  }
+
   const allMoves = getAllValidMoves(state.board, state.currentTurn)
   const hasMandatoryCapture = allMoves.some(m => m.captures.length > 0)
   const pieceMoves = allMoves.filter(m => m.from.row === row && m.from.col === col)

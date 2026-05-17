@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
 import Navbar from '@/components/ui/Navbar'
-import { Bot, Users, Puzzle, Monitor, ChevronRight } from 'lucide-react'
+import { Bot, Users, Puzzle, Monitor, LayoutGrid, ChevronRight } from 'lucide-react'
 
 const modes = [
   {
@@ -43,6 +43,16 @@ const modes = [
     href: '/play/local',
     color: '#669bbc',
     tag: 'LOCAL',
+  },
+  {
+    id: 'editor',
+    icon: LayoutGrid,
+    title: 'Board Editor',
+    subtitle: 'Custom Setup',
+    desc: 'Design any board position — add, remove, or promote pieces. Play from your custom setup or save as a puzzle.',
+    href: '/editor',
+    color: '#f3701e',
+    tag: 'EDITOR',
   },
 ]
 

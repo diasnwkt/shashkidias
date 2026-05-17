@@ -1,9 +1,11 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { createClient } from '@/lib/supabase/client'
 import PixelButton from './PixelButton'
-import { Menu, X, Zap } from 'lucide-react'
+import { Menu, X, Zap, ExternalLink } from 'lucide-react'
 
 const links = [
   { href: '/play',        label: 'Play' },
@@ -11,9 +13,45 @@ const links = [
   { href: '/play/puzzle', label: 'Puzzles' },
 ]
 
-export default function Navbar({ user }: { user?: { username?: string; is_pro?: boolean } | null }) {
+interface NavUser {
+  username?: string
+  is_pro?: boolean
+}
+
+export default function Navbar({ user: userProp }: { user?: NavUser | null }) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [user, setUser] = useState<NavUser | null | undefined>(userProp)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    async function loadUser() {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        if (authUser) {
+          const { data } = await supabase
+            .from('profiles')
+            .select('username, is_pro')
+            .eq('id', authUser.id)
+            .single()
+          setUser(data ?? null)
+        } else {
+          setUser(null)
+        }
+      } catch {
+        setUser(null)
+      }
+    }
+
+    loadUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      loadUser()
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   return (
     <nav
@@ -27,20 +65,23 @@ export default function Navbar({ user }: { user?: { username?: string; is_pro?: 
     >
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex items-center gap-1">
-            <span className="font-pixel text-[11px] leading-none">
-              <span className="text-[#f3701e]" style={{ textShadow: '0 0 12px rgba(243,112,30,0.5)' }}>n!</span>
-              <span className="text-white">checkers</span>
-            </span>
-          </div>
+        <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+          <Image
+            src="/nfactorial-logo.svg"
+            alt="nfactorial"
+            width={28}
+            height={28}
+            className="rounded-full flex-shrink-0"
+            style={{ filter: 'drop-shadow(0 0 6px rgba(244,121,32,0.5))' }}
+          />
+          <span className="font-pixel text-[11px] leading-none text-white">checkers</span>
           {user?.is_pro && (
             <span className="pro-badge text-white rounded-sm">PRO</span>
           )}
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6">
           {links.map(link => {
             const active = pathname.startsWith(link.href)
             return (
@@ -59,8 +100,24 @@ export default function Navbar({ user }: { user?: { username?: string; is_pro?: 
           })}
         </div>
 
-        {/* Auth actions */}
-        <div className="hidden md:flex items-center gap-2.5">
+        {/* nfactorial school CTA + auth actions */}
+        <div className="hidden md:flex items-center gap-2">
+          {/* nfactorial school button */}
+          <a
+            href="https://taplink.cc/nfactorial.school"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <PixelButton
+              variant="danger"
+              size="sm"
+              className="gap-1.5 text-[10px] font-pixel whitespace-nowrap"
+            >
+              <ExternalLink size={10} />
+              nfactorial school
+            </PixelButton>
+          </a>
+
           {user ? (
             <>
               {!user.is_pro && (
@@ -76,7 +133,7 @@ export default function Navbar({ user }: { user?: { username?: string; is_pro?: 
                 </PixelButton>
               </Link>
             </>
-          ) : (
+          ) : user === null ? (
             <>
               <Link href="/auth/login">
                 <PixelButton variant="ghost" size="sm">Login</PixelButton>
@@ -85,7 +142,7 @@ export default function Navbar({ user }: { user?: { username?: string; is_pro?: 
                 <PixelButton variant="primary" size="sm">Sign Up</PixelButton>
               </Link>
             </>
-          )}
+          ) : null /* still loading */}
         </div>
 
         {/* Mobile menu button */}
@@ -108,12 +165,19 @@ export default function Navbar({ user }: { user?: { username?: string; is_pro?: 
               {link.label}
             </Link>
           ))}
+
+          <a href="https://taplink.cc/nfactorial.school" target="_blank" rel="noopener noreferrer"
+            onClick={() => setMobileOpen(false)}
+            className="text-sm font-semibold text-[#c1121f] hover:text-[#f3701e] transition-colors flex items-center gap-1.5">
+            <ExternalLink size={13} /> nfactorial school
+          </a>
+
           <div className="flex gap-3 pt-3 border-t border-white/[0.06]">
             {user ? (
               <Link href="/profile" onClick={() => setMobileOpen(false)}>
                 <PixelButton variant="secondary" size="sm">Profile</PixelButton>
               </Link>
-            ) : (
+            ) : user === null ? (
               <>
                 <Link href="/auth/login" onClick={() => setMobileOpen(false)}>
                   <PixelButton variant="ghost" size="sm">Login</PixelButton>
@@ -122,7 +186,7 @@ export default function Navbar({ user }: { user?: { username?: string; is_pro?: 
                   <PixelButton variant="primary" size="sm">Sign Up</PixelButton>
                 </Link>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       )}

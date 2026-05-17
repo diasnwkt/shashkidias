@@ -40,13 +40,27 @@ export default function PuzzleSolvePage() {
   const [loading, setLoading] = useState(true)
   const [score, setScore] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const lastMoveRef = useRef<unknown>(null)
 
   useEffect(() => {
     async function loadPuzzle() {
       const { data } = await supabase.from('puzzles').select('*').eq('id', params.id).single()
       if (!data) { router.push('/play/puzzle'); return }
       setPuzzle(data as Puzzle)
-      setGameState(data.board_state as GameState)
+      // Always normalize: ensure clean playable state regardless of how it was stored
+      const rawState = data.board_state as GameState
+      setGameState({
+        ...rawState,
+        currentTurn: 'red',
+        status: 'playing',
+        selectedPiece: null,
+        validMoves: [],
+        lastMove: null,
+        moveCount: 0,
+        movesSinceCapture: rawState.movesSinceCapture ?? 0,
+        capturedRed: 0,
+        capturedBlue: 0,
+      })
       setLoading(false)
     }
     loadPuzzle()
@@ -63,13 +77,20 @@ export default function PuzzleSolvePage() {
     if (!puzzle || solveStatus !== 'playing') return
 
     setGameState(newState)
+
+    // Ignore piece-selection clicks — only process actual moves (lastMove reference changes)
+    if (!newState.lastMove || newState.lastMove === lastMoveRef.current) return
+    lastMoveRef.current = newState.lastMove
+
     const newMoveCount = moveCount + 1
     setMoveCount(newMoveCount)
 
-    // Check if this move matches expected solution
+    // Check if this move matches expected solution (from + to must match)
     const expectedMove = puzzle.solution_moves[moveCount]
     if (newState.lastMove && expectedMove) {
       const isCorrect =
+        newState.lastMove.from.row === expectedMove.from.row &&
+        newState.lastMove.from.col === expectedMove.from.col &&
         newState.lastMove.to.row === expectedMove.to.row &&
         newState.lastMove.to.col === expectedMove.to.col
 
@@ -135,13 +156,26 @@ export default function PuzzleSolvePage() {
 
   function resetPuzzle() {
     if (!puzzle) return
-    setGameState(puzzle.board_state)
+    const rawState = puzzle.board_state
+    setGameState({
+      ...rawState,
+      currentTurn: 'red',
+      status: 'playing',
+      selectedPiece: null,
+      validMoves: [],
+      lastMove: null,
+      moveCount: 0,
+      movesSinceCapture: rawState.movesSinceCapture ?? 0,
+      capturedRed: 0,
+      capturedBlue: 0,
+    })
     setMoveCount(0)
     setSolveStatus('playing')
     setTimer(0)
     setHintsUsed(0)
     setCurrentHint(null)
     setScore(0)
+    lastMoveRef.current = null
   }
 
   const diffColors: Record<string, string> = {

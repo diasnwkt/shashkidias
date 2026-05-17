@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
 import PixelButton from '@/components/ui/PixelButton'
 import Navbar from '@/components/ui/Navbar'
@@ -67,7 +68,7 @@ export default async function HomePage() {
               <div className="fade-up" style={{ animationDelay: '60ms' }}>
                 <span className="inline-flex items-center gap-2 font-pixel text-[8px] text-[#f3701e] border border-[#f3701e]/30 px-3 py-2 bg-[#f3701e]/5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#f3701e] animate-pulse inline-block" />
-                  nfactorial school 2024
+                  nfactorial school
                 </span>
               </div>
 
@@ -199,18 +200,28 @@ export default async function HomePage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Arman sprite side */}
             <div className="flex justify-center order-2 lg:order-1">
-              <div className="relative">
+              <div className="relative flex flex-col items-center">
                 {/* Glow halo */}
-                <div className="absolute inset-0 scale-150 rounded-full blur-3xl"
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-3xl pointer-events-none"
                   style={{ background: 'radial-gradient(circle, rgba(243,112,30,0.18) 0%, transparent 70%)' }} />
-                <div className="relative w-52 h-52 arman-idle flex items-center justify-center">
-                  <ArmanMiniPreview />
+
+                {/* Image — constrained, no overflow */}
+                <div className="relative arman-idle" style={{ width: 200, height: 220 }}>
+                  <Image
+                    src="/arman/default.png"
+                    alt="Arman"
+                    width={200}
+                    height={220}
+                    style={{ imageRendering: 'pixelated', objectFit: 'contain', width: '200px', height: '220px' }}
+                  />
+                  {/* Speech bubble anchored to the image, right side, not overlapping */}
+                  <div className="absolute top-6 -right-36 grad-card px-3 py-2 z-10" style={{ maxWidth: 130 }}>
+                    <p className="text-[10px] text-[#669bbc] leading-relaxed">Reading Hacker News while I think...</p>
+                  </div>
                 </div>
-                <div className="mt-4 text-center font-pixel text-[8px] text-[#f3701e]">ARMAN.EXE</div>
-                {/* Floating speech bubble */}
-                <div className="absolute -top-4 -right-4 grad-card px-3 py-2 max-w-[140px]">
-                  <p className="text-[10px] text-[#669bbc] leading-relaxed">Reading Hacker News while I think...</p>
-                </div>
+
+                {/* Label clearly below the image */}
+                <div className="mt-2 font-pixel text-[8px] text-[#f3701e]">ARMAN.EXE</div>
               </div>
             </div>
 
@@ -309,7 +320,7 @@ export default async function HomePage() {
       <footer className="relative z-10 py-10 px-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="font-pixel text-[9px] text-white/30">
-            <span className="text-[#f3701e]">n!</span>checkers — nfactorial school 2024
+            <span className="text-[#f3701e]">n!</span>checkers — nfactorial school
           </div>
           <div className="flex gap-8 text-sm text-[#669bbc]/40">
             <Link href="/play"        className="hover:text-white transition-colors">Play</Link>
@@ -322,30 +333,3 @@ export default async function HomePage() {
   )
 }
 
-function ArmanMiniPreview() {
-  return (
-    <svg viewBox="0 0 32 32" width="208" height="208" style={{ imageRendering: 'pixelated' }}>
-      <circle cx="16" cy="16" r="14" fill="rgba(243,112,30,0.06)" />
-      <rect x="10" y="16" width="12" height="10" fill="#1a3a50" />
-      <rect x="11" y="17" width="10" height="8" fill="#003049" />
-      <rect x="14" y="17" width="4" height="8" fill="#f3701e" opacity="0.6" />
-      <rect x="10" y="8" width="12" height="10" fill="#c8956c" />
-      <rect x="10" y="8" width="12" height="3" fill="#1a0a00" />
-      <rect x="10" y="11" width="2" height="2" fill="#1a0a00" />
-      <rect x="12" y="13" width="2" height="2" fill="#1a0a00" />
-      <rect x="18" y="13" width="2" height="2" fill="#1a0a00" />
-      <rect x="13" y="13" width="1" height="1" fill="white" />
-      <rect x="19" y="13" width="1" height="1" fill="white" />
-      <rect x="13" y="16" width="6" height="1" fill="#8b4513" />
-      <rect x="6"  y="16" width="4" height="3" fill="#c8956c" />
-      <rect x="22" y="16" width="4" height="3" fill="#c8956c" />
-      <rect x="6"  y="19" width="3" height="3" fill="#c8956c" />
-      <rect x="23" y="19" width="3" height="3" fill="#c8956c" />
-      <rect x="11" y="26" width="4" height="4" fill="#1a0a00" />
-      <rect x="17" y="26" width="4" height="4" fill="#1a0a00" />
-      <rect x="10" y="29" width="5" height="2" fill="#0a0a0a" />
-      <rect x="17" y="29" width="5" height="2" fill="#0a0a0a" />
-      <rect x="0"  y="0"  width="32" height="32" fill="none" stroke="#f3701e" strokeWidth="0.5" opacity="0.4" />
-    </svg>
-  )
-}

@@ -12,6 +12,7 @@ import { GameState } from '@/lib/checkers/types'
 import { formatTime } from '@/lib/utils'
 import { Users, Clock, Copy, Check } from 'lucide-react'
 import useAudio from '@/hooks/useAudio'
+import { useBoardTheme } from '@/hooks/useBoardTheme'
 
 export default function MultiplayerGamePage() {
   const params = useParams()
@@ -19,6 +20,7 @@ export default function MultiplayerGamePage() {
   const roomId = params.roomId as string
   const supabase = createClient()
   const audio = useAudio()
+  const boardTheme = useBoardTheme()
 
   const [gameState, setGameState] = useState<GameState>(createInitialGameState())
   const [playerColor, setPlayerColor] = useState<'red' | 'blue' | null>(null)
@@ -192,6 +194,7 @@ export default function MultiplayerGamePage() {
                 onStateChange={handleStateChange}
                 disabled={!isPlayerTurn}
                 playerColor={playerColor ?? 'red'}
+                boardTheme={boardTheme}
                 onCapture={handleCapture}
                 showCoordinates
               />

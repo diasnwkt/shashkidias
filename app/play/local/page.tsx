@@ -1,5 +1,6 @@
 'use client'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Board from '@/components/game/Board'
 import GameOver from '@/components/game/GameOver'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
@@ -7,12 +8,29 @@ import Navbar from '@/components/ui/Navbar'
 import PixelButton from '@/components/ui/PixelButton'
 import { createInitialGameState } from '@/lib/checkers/engine'
 import { GameState } from '@/lib/checkers/types'
-import { RotateCcw } from 'lucide-react'
+import { RotateCcw, LayoutGrid } from 'lucide-react'
 import useAudio from '@/hooks/useAudio'
+import { useBoardTheme } from '@/hooks/useBoardTheme'
+import Link from 'next/link'
 
-export default function LocalGamePage() {
-  const [gameState, setGameState] = useState<GameState>(createInitialGameState())
+function LocalGame() {
+  const searchParams = useSearchParams()
+  const fromEditor = searchParams.get('from') === 'editor'
+
+  const [gameState, setGameState] = useState<GameState>(() => {
+    if (typeof window !== 'undefined' && fromEditor) {
+      const saved = sessionStorage.getItem('editorBoard')
+      if (saved) {
+        try {
+          sessionStorage.removeItem('editorBoard')
+          return JSON.parse(saved) as GameState
+        } catch {}
+      }
+    }
+    return createInitialGameState()
+  })
   const audio = useAudio()
+  const boardTheme = useBoardTheme()
 
   const handleStateChange = useCallback((newState: GameState) => setGameState(newState), [])
   const handleCapture = useCallback(() => audio.playCapture(), [audio])
@@ -32,9 +50,16 @@ export default function LocalGamePage() {
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between py-4 mb-4">
             <div className="font-pixel text-[10px] text-[#669bbc]">LOCAL 2-PLAYER</div>
-            <PixelButton variant="ghost" size="sm" onClick={handleRematch} className="gap-1">
-              <RotateCcw size={12} /> New Game
-            </PixelButton>
+            <div className="flex items-center gap-2">
+              <Link href="/editor">
+                <PixelButton variant="ghost" size="sm" className="gap-1">
+                  <LayoutGrid size={12} /> Editor
+                </PixelButton>
+              </Link>
+              <PixelButton variant="ghost" size="sm" onClick={handleRematch} className="gap-1">
+                <RotateCcw size={12} /> New Game
+              </PixelButton>
+            </div>
           </div>
 
           {/* Score bar */}
@@ -70,6 +95,7 @@ export default function LocalGamePage() {
               gameState={gameState}
               onStateChange={handleStateChange}
               playerColor={gameState.currentTurn}
+              boardTheme={boardTheme}
               onCapture={handleCapture}
               onKingPromotion={handleKing}
               onMove={handleMove}
@@ -90,5 +116,13 @@ export default function LocalGamePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LocalGamePage() {
+  return (
+    <Suspense>
+      <LocalGame />
+    </Suspense>
   )
 }

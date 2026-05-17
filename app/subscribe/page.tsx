@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
 import Navbar from '@/components/ui/Navbar'
 import PixelButton from '@/components/ui/PixelButton'
-import { Zap, Palette, Layers, Sparkles, Check, CreditCard } from 'lucide-react'
+import { Zap, Palette, Layers, Sparkles, Check, CreditCard, FlaskConical } from 'lucide-react'
 
 const PRO_FEATURES = [
   { icon: Palette, label: '10+ Board Themes', desc: 'Midnight, Desert, Ocean, Forest, and more' },
@@ -22,9 +22,14 @@ const BOARD_THEMES = [
   { name: 'Crimson', light: '#ffcdd2', dark: '#c62828' },
 ]
 
+const stripeConfigured =
+  typeof process !== 'undefined' &&
+  process.env.NEXT_PUBLIC_STRIPE_CONFIGURED === 'true'
+
 export default function SubscribePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [demoLoading, setDemoLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function handleSubscribe() {
@@ -36,12 +41,30 @@ export default function SubscribePage() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        setError(data.error || 'Something went wrong')
+        setError(data.error || 'Stripe is not configured. Use the test button below.')
         setLoading(false)
       }
     } catch {
-      setError('Network error. Please try again.')
+      setError('Network error. Use the test button below.')
       setLoading(false)
+    }
+  }
+
+  async function handleDemoActivate() {
+    setDemoLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/subscribe/demo', { method: 'POST' })
+      const data = await res.json()
+      if (data.success) {
+        router.push('/subscribe/success')
+      } else {
+        setError(data.error || 'Please log in to activate Pro.')
+        setDemoLoading(false)
+      }
+    } catch {
+      setError('Network error. Please try again.')
+      setDemoLoading(false)
     }
   }
 
@@ -105,7 +128,7 @@ export default function SubscribePage() {
                 </div>
               )}
 
-              <PixelButton onClick={handleSubscribe} disabled={loading} size="lg"
+              <PixelButton onClick={handleSubscribe} disabled={loading || demoLoading} size="lg"
                 className="w-full justify-center gap-2" glowing>
                 <CreditCard size={16} />
                 {loading ? 'Redirecting...' : 'Subscribe — $5/mo'}
@@ -114,8 +137,33 @@ export default function SubscribePage() {
               <p className="text-[#669bbc]/40 text-xs text-center mt-3">
                 Cancel anytime • Secure payment via Stripe
               </p>
-              <p className="text-[#669bbc]/30 text-[10px] text-center mt-1 font-pixel">
+              <p className="text-[#669bbc]/25 text-[10px] text-center mt-1 font-pixel">
                 TEST CARD: 4242 4242 4242 4242
+              </p>
+
+              {/* Demo mode divider */}
+              <div className="relative my-5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/10" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="px-3 text-[10px] text-[#669bbc]/40 font-pixel"
+                    style={{ background: 'rgba(10,37,64,0.95)' }}>OR</span>
+                </div>
+              </div>
+
+              <PixelButton
+                onClick={handleDemoActivate}
+                disabled={loading || demoLoading}
+                variant="secondary"
+                size="sm"
+                className="w-full justify-center gap-2"
+              >
+                <FlaskConical size={14} />
+                {demoLoading ? 'Activating...' : 'Activate Pro (Demo — Free)'}
+              </PixelButton>
+              <p className="text-[#669bbc]/30 text-[9px] text-center mt-2 font-pixel">
+                FOR TESTING ONLY — NO PAYMENT NEEDED
               </p>
             </div>
 
@@ -126,7 +174,6 @@ export default function SubscribePage() {
                 {BOARD_THEMES.map(theme => (
                   <div key={theme.name} className="border border-white/10 p-2"
                     style={{ background: 'rgba(10,37,64,0.6)' }}>
-                    {/* Mini board preview */}
                     <div className="grid grid-cols-4 mb-2" style={{ aspectRatio: '1' }}>
                       {Array.from({ length: 16 }, (_, i) => {
                         const row = Math.floor(i / 4)

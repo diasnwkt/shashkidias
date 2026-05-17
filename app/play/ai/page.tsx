@@ -7,13 +7,14 @@ import GameOver from '@/components/game/GameOver'
 import PixelButton from '@/components/ui/PixelButton'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
 import Navbar from '@/components/ui/Navbar'
-import { createInitialGameState, getAllValidMoves } from '@/lib/checkers/engine'
+import { createInitialGameState, getAllValidMoves, applyMoveToState } from '@/lib/checkers/engine'
 import { getBestMove, Difficulty } from '@/lib/checkers/minimax'
 import { GameState } from '@/lib/checkers/types'
 import { ArmanMood } from '@/components/game/ArmanSprite'
 import { formatTime } from '@/lib/utils'
 import { Settings, RotateCcw, Clock } from 'lucide-react'
 import useAudio from '@/hooks/useAudio'
+import { useBoardTheme } from '@/hooks/useBoardTheme'
 
 const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   easy: '🟢 Beginner',
@@ -36,6 +37,7 @@ export default function AIGamePage() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const audio = useAudio()
 
+  const boardTheme = useBoardTheme()
   const playerColor = 'red'
   const armanColor = 'blue'
   const isPlayerTurn = gameState.currentTurn === playerColor && gameState.status === 'playing'
@@ -56,10 +58,19 @@ export default function AIGamePage() {
     setIsArmanThinking(true)
     setArmanMood('think')
 
-    const delay = difficulty === 'easy' ? 600 : difficulty === 'normal' ? 1000 : 1400
+    // During multi-capture continuation, validMoves is already constrained to the capturing piece
+    const isChainCapture = gameState.validMoves.length > 0 && gameState.selectedPiece != null
+    const delay = isChainCapture ? 350 : difficulty === 'easy' ? 600 : difficulty === 'normal' ? 1000 : 1400
+
     const timer = setTimeout(() => {
-      const move = getBestMove(gameState.board, armanColor, difficulty)
-      if (!move) return
+      const move = isChainCapture
+        ? gameState.validMoves[0]
+        : getBestMove(gameState.board, armanColor, difficulty)
+
+      if (!move) {
+        setIsArmanThinking(false)
+        return
+      }
 
       setArmanMood(move.captures.length > 0 ? 'attack' : 'idle')
       if (move.captures.length > 0) {
@@ -73,7 +84,6 @@ export default function AIGamePage() {
         from: move.from, to: move.to, captures: move.captures,
       }])
 
-      const { applyMoveToState } = require('@/lib/checkers/engine')
       setGameState(prev => applyMoveToState(prev, move))
       setIsArmanThinking(false)
 
@@ -81,7 +91,9 @@ export default function AIGamePage() {
     }, delay)
 
     return () => clearTimeout(timer)
-  }, [gameState.currentTurn, gameState.status, difficulty])
+  // gameState.moveCount ensures this re-fires after each move, including mid-chain captures
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState.currentTurn, gameState.status, gameState.moveCount, difficulty])
 
   // Game over: fetch AI analysis
   useEffect(() => {
@@ -259,6 +271,7 @@ export default function AIGamePage() {
                 onStateChange={handleStateChange}
                 disabled={!isPlayerTurn || isArmanThinking}
                 playerColor={playerColor}
+                boardTheme={boardTheme}
                 onCapture={handleCapture}
                 onKingPromotion={handleKingPromotion}
                 onMove={handleMove}

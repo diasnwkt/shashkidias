@@ -164,7 +164,7 @@
 }
 
 /* ── Pixel button ─────────────────────────────────────── */
-.pixel-btn { transition: transform 80ms ease, box-shadow 80ms ease; cursor: pointer; letter-spacing: 0.01em; }
+.pixel-btn { transition: transform 80ms ease, box-shadow 80ms ease, background-color 150ms ease, color 150ms ease, border-color 150ms ease; cursor: pointer; letter-spacing: 0.01em; }
 .pixel-btn:active { transform: translateY(2px) translateX(2px); }
 
 /* ── Glows ────────────────────────────────────────────── */
@@ -271,3 +271,9 @@
 /* ── Page transition ──────────────────────────────────── */
 .page-enter        { opacity: 0; transform: scale(0.98); }
 .page-enter-active { opacity: 1; transform: scale(1); transition: all 200ms ease; }
+
+/* ── Thinking dots bounce ─────────────────────────────── */
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+  40%            { transform: translateY(-3px); opacity: 1; }
+}
