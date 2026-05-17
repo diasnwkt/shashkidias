@@ -5,7 +5,7 @@
 -- board_state is the full GameState JSON
 -- solution_moves is array of Move objects
 
-insert into public.puzzles (title, description, difficulty, board_state, solution_moves, is_daily, hint1, hint2, hint3, created_by) values
+insert into public.puzzles (title, description, difficulty, board_state, solution_moves, is_daily, daily_date, hint1, hint2, hint3, created_by) values
 
 -- EASY PUZZLES
 ('First Blood', 'Red can capture a blue piece in one move.', 'easy',
