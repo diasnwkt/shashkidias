@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import AnimatedBackground from '@/components/ui/AnimatedBackground'
 import Navbar from '@/components/ui/Navbar'
-import PixelButton from '@/components/ui/PixelButton'
 import { Bot, Users, Puzzle, Monitor, ChevronRight } from 'lucide-react'
 
 const modes = [
@@ -10,7 +9,7 @@ const modes = [
     icon: Bot,
     title: 'vs Arman AI',
     subtitle: 'Single Player',
-    desc: 'Battle the 8-bit Arman. He reads tech news while thinking and analyzes your game after.',
+    desc: 'Battle the 8-bit Arman. He reads live tech news while thinking and analyzes your game with Gemini AI afterwards.',
     href: '/play/ai',
     color: '#f3701e',
     tag: 'AI-POWERED',
@@ -20,7 +19,7 @@ const modes = [
     icon: Users,
     title: 'Multiplayer',
     subtitle: 'Online PvP',
-    desc: 'Play with friends via link or find rated opponents. ELO ranking + city leaderboards.',
+    desc: 'Play with friends via invite link or get matched by ELO rating. City leaderboards for Almaty, Astana and more.',
     href: '/play/multiplayer',
     color: '#669bbc',
     tag: 'REALTIME',
@@ -30,7 +29,7 @@ const modes = [
     icon: Puzzle,
     title: 'Puzzles',
     subtitle: 'Brain Training',
-    desc: 'Daily puzzle + 50+ tactical studies from Easy to Grandmaster difficulty.',
+    desc: 'Daily puzzle with streak tracking + library of 50+ tactical studies from Easy to Grandmaster difficulty.',
     href: '/play/puzzle',
     color: '#c1121f',
     tag: 'DAILY',
@@ -40,7 +39,7 @@ const modes = [
     icon: Monitor,
     title: 'Local 2-Player',
     subtitle: 'Pass & Play',
-    desc: 'Two players on the same device. Classic face-to-face experience.',
+    desc: 'Two players on the same device. Classic face-to-face experience, no account required.',
     href: '/play/local',
     color: '#669bbc',
     tag: 'LOCAL',
@@ -53,40 +52,63 @@ export default function PlayPage() {
       <AnimatedBackground />
       <Navbar />
 
-      <div className="relative z-10 pt-24 pb-16 px-4">
+      <div className="relative z-10 pt-28 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="font-pixel text-[10px] text-[#f3701e] mb-3">SELECT MODE</div>
-            <h1 className="text-4xl font-black text-white">How do you want to play?</h1>
+
+          {/* Header */}
+          <div className="mb-14 fade-up" style={{ animationDelay: '60ms' }}>
+            <p className="font-pixel text-[9px] text-[#f3701e] mb-3 tracking-widest">SELECT MODE</p>
+            <h1 className="text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+              How do you want<br />
+              <span style={{ color: '#669bbc' }}>to play?</span>
+            </h1>
           </div>
 
+          {/* Mode cards */}
           <div className="grid sm:grid-cols-2 gap-4">
-            {modes.map((mode) => (
-              <Link key={mode.id} href={mode.href} className="group block">
-                <div className="h-full p-6 border-2 border-white/10 hover:border-white/30 transition-all duration-200 hover:shadow-lg"
-                  style={{
-                    background: 'rgba(10,37,64,0.8)',
-                  }}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 flex items-center justify-center border-2"
-                      style={{ borderColor: mode.color, color: mode.color }}>
-                      <mode.icon size={22} />
+            {modes.map((mode, i) => (
+              <Link key={mode.id} href={mode.href} className="group block fade-up"
+                style={{ animationDelay: `${120 + i * 60}ms` }}>
+                <div className="grad-card relative h-full p-8 overflow-hidden hover:-translate-y-1.5 transition-transform duration-300">
+                  {/* Radial color tint */}
+                  <div className="absolute inset-0 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                    style={{ background: `radial-gradient(ellipse at top left, ${mode.color}10 0%, transparent 60%)` }} />
+                  {/* Top accent bar */}
+                  <div className="absolute top-0 left-0 w-14 h-0.5 transition-all duration-300 group-hover:w-24"
+                    style={{ background: mode.color }} />
+
+                  <div className="relative">
+                    <div className="flex items-start justify-between mb-7">
+                      <div className="inline-flex items-center justify-center w-14 h-14"
+                        style={{ background: `${mode.color}14`, color: mode.color }}>
+                        <mode.icon size={24} />
+                      </div>
+                      <span className="font-pixel text-[7px] px-2.5 py-1.5 border tracking-wider"
+                        style={{ borderColor: `${mode.color}38`, color: mode.color, background: `${mode.color}0a` }}>
+                        {mode.tag}
+                      </span>
                     </div>
-                    <span className="font-pixel text-[7px] px-2 py-1 border"
-                      style={{ borderColor: mode.color + '40', color: mode.color }}>
-                      {mode.tag}
-                    </span>
-                  </div>
 
-                  <div className="mb-2">
-                    <div className="text-xs text-[#669bbc] font-medium mb-0.5">{mode.subtitle}</div>
-                    <h3 className="text-xl font-black text-white group-hover:text-[#f3701e] transition-colors">{mode.title}</h3>
-                  </div>
+                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.15em]"
+                      style={{ color: `${mode.color}80` }}>
+                      {mode.subtitle}
+                    </div>
+                    <h3 className="text-2xl font-extrabold text-white mb-3 tracking-tight group-hover:text-[#f3701e] transition-colors duration-200">
+                      {mode.title}
+                    </h3>
+                    <p className="leading-relaxed mb-7 text-sm" style={{ color: 'rgba(102,155,188,0.68)' }}>
+                      {mode.desc}
+                    </p>
 
-                  <p className="text-sm text-[#669bbc]/80 leading-relaxed mb-4">{mode.desc}</p>
-
-                  <div className="flex items-center gap-1 text-sm font-semibold" style={{ color: mode.color }}>
-                    Play now <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                    <div className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2.5 border transition-colors duration-200"
+                      style={{
+                        borderColor: `${mode.color}38`,
+                        color: mode.color,
+                        background: `${mode.color}0d`,
+                      }}>
+                      Play now
+                      <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform duration-200" />
+                    </div>
                   </div>
                 </div>
               </Link>
