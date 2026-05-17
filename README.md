@@ -1,67 +1,87 @@
-# nfactorial school — Checkers
+<div align="center">
 
-> The most ambitious checkers platform ever built. Not just a board game — a startup prototype.
+<img src="https://readme-typing-svg.demolab.com?font=Press+Start+2P&size=18&pause=1000&color=F3701E&center=true&vCenter=true&width=700&lines=SHASHKI;nfactorial+Checkers+Platform;vs+Arman+AI;Real-time+Multiplayer;Built+for+nfactorial+2024" alt="Shashki" />
 
-Built for the **nfactorial school 2024 challenge** by demonstrating full-stack engineering, product thinking, and business instincts in a single web application.
+<br />
 
----
+![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-AI_Coach-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+![Vercel](https://img.shields.io/badge/Deployed-Vercel-black?style=for-the-badge&logo=vercel)
 
-## What I Built
+<br />
 
-A modern checkers platform that goes far beyond a simple board game. Here's what makes it different:
+[![Live Demo](https://img.shields.io/badge/▶_PLAY_NOW-checkers--nfac.vercel.app-F3701E?style=for-the-badge)](https://checkers-nfac.vercel.app)
 
-### Game Modes
-- **vs Arman AI** — Battle an 8-bit pixel-art version of Arman Seitkali. The AI uses Minimax + Alpha-Beta pruning with 3 difficulty levels (Easy, Normal, Arman Mode). While Arman "thinks," he reads live tech news from Hacker News and shares summaries powered by Gemini AI.
-- **Multiplayer** — Real-time games via Supabase WebSockets. Play with a friend via share link, or use ELO matchmaking to find a rated opponent. City leaderboards (Almaty, Astana, etc).
-- **Puzzle Mode** — 50+ tactical checkers studies from Easy to Grandmaster. Daily puzzle with streak tracking. Hint system (3 hints per puzzle, each costs points).
-- **Local 2-Player** — Pass-and-play on one device.
+<br />
 
-### AI Coach
-After every game vs Arman, Google Gemini analyzes your moves and gives a post-game breakdown: missed captures, positional mistakes, what you did well — in Arman's voice, with a bit of Kazakh flair.
+![GitHub last commit](https://img.shields.io/github/last-commit/diasnwkt/shashkidias?color=f3701e&style=flat-square)
+![GitHub repo size](https://img.shields.io/github/repo-size/diasnwkt/shashkidias?color=669bbc&style=flat-square)
+![GitHub stars](https://img.shields.io/github/stars/diasnwkt/shashkidias?style=social)
 
-### Pro Subscription ($5/month)
-Stripe Test Mode integration. Subscribers unlock:
-- 10 preset board themes (Midnight, Desert, Ocean, Forest, Crimson, Gold, Neon, Sakura, Arctic...)
-- Custom color picker for board cells and pieces
-- Animated particle effects on moves
-
-### Audio System
-- Lo-fi background music (Howler.js) during games
-- 8-bit sound effects generated programmatically via Web Audio API (no files needed): piece moves, explosion on capture, king promotion jingle, victory fanfare, defeat sound
-
-### Animations
-- **Explosion effect** when a piece is captured — 12 particles fly outward with physics
-- Arman sprite has 5 animated states: idle bounce, thinking, attack, celebrate, sad
-- Board pieces spring-animate on selection and movement
-- King promotion crown burst animation
-- Animated diagonal stripe background
-- Staggered leaderboard row entrance
+</div>
 
 ---
 
-## For Whom & Why It's Valuable
+<!-- Once you record a GIF, uncomment this block and delete the line above it:
+<div align="center">
+  <img src="public/preview.gif" alt="Shashki gameplay" width="100%" />
+</div>
+-->
 
-**Target audience:** Competitive mobile gamers and developers in Central Asia who want a quick strategy game during breaks.
+> **The most ambitious checkers platform ever built.** Not just a board game — a startup prototype with AI, real-time multiplayer, monetization, and pixel art soul. Built for the **nfactorial school 2024** challenge.
 
-**Why it's valuable:**
-1. **Retention** — Daily puzzle + ELO ranking + city leaderboards give players reasons to come back every day
-2. **Social** — City-based rankings create local community ("I'm #3 in Almaty")
-3. **Monetization** — $5/mo Pro subscription is priced for impulse purchase; cosmetics are the least intrusive monetization model
-4. **Virality** — Multiplayer invite link is the primary growth mechanism
+---
+
+## Features
+
+### 🤖 vs Arman AI
+Battle an 8-bit pixel-art version of Arman Seitkali. Minimax + Alpha-Beta pruning at 3 difficulty levels. While Arman "thinks," he reads live **Hacker News** and shares summaries powered by **Gemini AI**. After the game — full AI Coach breakdown of your moves, in Arman's voice.
+
+### ⚡ Real-time Multiplayer
+Supabase WebSockets. Create a room → share the link → play instantly (no account required for guests). ELO matchmaking with city leaderboards: Almaty, Astana, Shymkent, Karaganda.
+
+### 🧩 Puzzle Mode
+50+ tactical studies from Easy to Grandmaster. Daily puzzle with streak tracking. Hint system (3 hints per puzzle, each costs points). Solution validation with from/to move checking.
+
+### 💳 Pro Subscription ($5/mo)
+Full Stripe integration. Subscribers unlock 10+ board themes, custom color picker, animated particle effects. Webhook → Supabase sets `is_pro = true`.
+
+### 🎵 Audio System
+Lo-fi background music via **Howler.js** + 8-bit SFX generated with **Web Audio API** — zero audio files. Piece clack, capture explosion, king jingle, victory fanfare.
+
+### 💥 Animations
+12-particle explosion on capture · Arman sprite with 5 states (idle/think/attack/celebrate/sad) · Spring-animated pieces · King crown burst · Staggered leaderboard entrances
+
+---
+
+## Screenshots
+
+<!-- Save screenshots to public/screenshots/ then replace the placeholder text with: ![](public/screenshots/landing.png) etc. -->
+
+| Landing | vs Arman AI | Leaderboard |
+|:-------:|:-----------:|:-----------:|
+| _add screenshot_ | _add screenshot_ | _add screenshot_ |
+
+| Puzzle Mode | Board Editor | Pro Themes |
+|:-----------:|:-----------:|:----------:|
+| _add screenshot_ | _add screenshot_ | _add screenshot_ |
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 14 (App Router) + TypeScript + Tailwind CSS |
-| Animations | Framer Motion + CSS animations |
-| Backend/DB | Supabase (PostgreSQL + Auth + Realtime) |
-| AI | Google Gemini 1.5 Flash |
-| Payments | Stripe (Test Mode) |
-| Audio | Howler.js + Web Audio API |
-| Deploy | Vercel |
+<div align="center">
+
+| | | | | | | |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| <img src="https://skillicons.dev/icons?i=nextjs" width="48"/><br/>Next.js 16 | <img src="https://skillicons.dev/icons?i=ts" width="48"/><br/>TypeScript | <img src="https://skillicons.dev/icons?i=tailwind" width="48"/><br/>Tailwind v4 | <img src="https://skillicons.dev/icons?i=react" width="48"/><br/>React 19 | <img src="https://skillicons.dev/icons?i=supabase" width="48"/><br/>Supabase | <img src="https://skillicons.dev/icons?i=vercel" width="48"/><br/>Vercel | <img src="https://skillicons.dev/icons?i=postgres" width="48"/><br/>PostgreSQL |
+
+</div>
+
+**Also:** Google Gemini 1.5 Flash · Stripe · Howler.js · Web Audio API · Framer Motion
 
 ---
 
@@ -69,27 +89,30 @@ Stripe Test Mode integration. Subscribers unlock:
 
 **nfactorial meets 8-bit.** Not a retro game, not a corporate dashboard. A startup product with pixel art soul.
 
-- **UI pages** (landing, profile, leaderboard) = clean, bold, nfactorial-inspired dark design
-- **Game zone** = 8-bit pixel elements (Press Start 2P font, Arman sprite, explosion particles)
-- Color palette: `#003049` (base) + `#c1121f` (primary) + `#f3701e` (accent) + `#669bbc` (secondary)
+- **UI pages** → clean, bold dark design (nfactorial DNA)
+- **Game zone** → Press Start 2P font, CSS pixel sprite, particle explosions (8-bit DNA)
+- **Palette:** `#003049` base · `#c1121f` red · `#f3701e` orange · `#669bbc` blue
 
 ---
 
-## Setup
+## Why It's a Business
+
+| Metric | Mechanism |
+|--------|-----------|
+| **Daily retention** | Daily puzzle + streak system |
+| **Social hooks** | City ELO rankings ("I'm #3 in Almaty") |
+| **Monetization** | $5/mo cosmetics subscription (impulse price) |
+| **Virality** | Multiplayer invite link as primary growth loop |
+
+---
+
+<details>
+<summary><b>🚀 Local Setup</b></summary>
 
 ```bash
-# Install dependencies
 npm install
-
-# Copy env template
 cp .env.local.example .env.local
-# Fill in: SUPABASE_URL, SUPABASE_ANON_KEY, GEMINI_API_KEY, STRIPE keys
-
-# Run Supabase schema
-# Copy lib/supabase/schema.sql into your Supabase SQL editor and run it
-# Then run lib/supabase/puzzle-seed.sql to seed puzzles
-
-# Start development
+# fill in env values, then:
 npm run dev
 ```
 
@@ -107,55 +130,61 @@ STRIPE_PRICE_ID=price_...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### Stripe Test Mode
-Use card `4242 4242 4242 4242` with any future expiry and CVC to test the Pro subscription flow.
+Test Stripe with card `4242 4242 4242 4242` · any future expiry · any CVC.
 
----
+</details>
 
-## Project Structure
+<details>
+<summary><b>📁 Project Structure</b></summary>
 
 ```
 app/
-  page.tsx              — Landing page
+  page.tsx                — Landing page
   play/
-    page.tsx            — Mode selector
-    ai/page.tsx         — vs Arman AI
-    multiplayer/        — Online PvP + lobby
-    puzzle/             — Puzzle mode
-    local/page.tsx      — Local 2-player
-  profile/              — User stats
-  leaderboard/          — ELO rankings
-  subscribe/            — Pro subscription
-  customize/            — Theme editor (Pro)
+    ai/page.tsx           — vs Arman AI
+    multiplayer/          — Online PvP + ELO matchmaking
+    puzzle/               — Daily puzzle + library
+    local/page.tsx        — Local 2-player
+  leaderboard/            — Global + city ELO rankings
+  subscribe/              — Pro subscription (Stripe)
+  customize/              — Board theme editor (Pro only)
+  editor/                 — Board position editor
+  profile/                — User stats + game history
   api/
-    ai-coach/           — Gemini game analysis
-    arman-news/         — HackerNews + Gemini summaries
-    stripe/             — Checkout + webhook
+    ai-coach/             — Gemini post-game analysis
+    arman-news/           — HackerNews + Gemini summaries
+    stripe/               — Checkout + webhook
 
 lib/checkers/
-  engine.ts             — Full Russian checkers rules
-  minimax.ts            — AI with Alpha-Beta pruning
-  types.ts              — Game type definitions
+  engine.ts               — Full Russian checkers rules (pure TS)
+  minimax.ts              — AI with Alpha-Beta pruning
+  types.ts                — Game type definitions
 
 components/game/
-  Board.tsx             — Interactive game board
-  Piece.tsx             — Piece with animations
-  Explosion.tsx         — Particle explosion effect
-  ArmanSprite.tsx       — 8-bit CSS pixel art character
-  ArmanPanel.tsx        — Arman's speech + news feed
-  GameOver.tsx          — End screen + AI Coach analysis
+  Board.tsx               — Interactive game board
+  ArmanSprite.tsx         — 8-bit CSS pixel art character
+  ArmanPanel.tsx          — Arman speech + live news feed
+  Explosion.tsx           — Particle explosion on capture
+  GameOver.tsx            — End screen + AI Coach analysis
 ```
 
----
+</details>
 
-## What I'd Build Next
+<details>
+<summary><b>🗺 What I'd Build Next</b></summary>
 
 - **Tournament system** — 8-player bracket with real-time spectating
 - **Replay sharing** — Export any game as a shareable animated replay
 - **Mobile PWA** — Install to home screen, offline puzzle mode
-- **AI difficulty expansion** — Neural network trained on real checkers games
+- **Neural network AI** — Trained on real checkers games, replacing Minimax
 - **Social profiles** — Follow players, challenge friends directly
+
+</details>
 
 ---
 
-*Made with ❤️ for nfactorial school 2024. Built in record time using Claude Code.*
+<div align="center">
+
+**Made with ❤️ for nfactorial school 2024 · Built with [Claude Code](https://claude.ai/code)**
+
+</div>
