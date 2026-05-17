@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = 'force-dynamic'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -41,6 +42,7 @@ export default function PuzzleSolvePage() {
   const [score, setScore] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const lastMoveRef = useRef<unknown>(null)
+  const moveCountRef = useRef(0)
 
   useEffect(() => {
     async function loadPuzzle() {
@@ -82,12 +84,15 @@ export default function PuzzleSolvePage() {
     if (!newState.lastMove || newState.lastMove === lastMoveRef.current) return
     lastMoveRef.current = newState.lastMove
 
-    const newMoveCount = moveCount + 1
+    // Use ref so chain captures always see the current count, not a stale closure value
+    const currentCount = moveCountRef.current
+    const newMoveCount = currentCount + 1
+    moveCountRef.current = newMoveCount
     setMoveCount(newMoveCount)
 
     // Check if this move matches expected solution (from + to must match)
-    const expectedMove = puzzle.solution_moves[moveCount]
-    if (newState.lastMove && expectedMove) {
+    const expectedMove = puzzle.solution_moves[currentCount]
+    if (expectedMove) {
       const isCorrect =
         newState.lastMove.from.row === expectedMove.from.row &&
         newState.lastMove.from.col === expectedMove.from.col &&
@@ -117,7 +122,7 @@ export default function PuzzleSolvePage() {
       // Save completion
       savePuzzleCompletion(finalScore)
     }
-  }, [puzzle, moveCount, solveStatus, timer, hintsUsed, audio])
+  }, [puzzle, solveStatus, timer, hintsUsed, audio])
 
   async function savePuzzleCompletion(finalScore: number) {
     const { data: { user } } = await supabase.auth.getUser()
@@ -170,6 +175,7 @@ export default function PuzzleSolvePage() {
       capturedBlue: 0,
     })
     setMoveCount(0)
+    moveCountRef.current = 0
     setSolveStatus('playing')
     setTimer(0)
     setHintsUsed(0)
@@ -225,7 +231,8 @@ export default function PuzzleSolvePage() {
 
           <div className="flex flex-col lg:flex-row gap-6 items-start">
             {/* Board */}
-            <div className="relative flex justify-center flex-1">
+            <div className="flex-1 flex justify-center">
+              <div className="relative">
               <Board
                 gameState={gameState}
                 onStateChange={handleStateChange}
@@ -277,6 +284,7 @@ export default function PuzzleSolvePage() {
                   </div>
                 </motion.div>
               )}
+              </div>
             </div>
 
             {/* Side panel */}
